@@ -11,19 +11,19 @@ var assertCatch = require('self-explain').assertCatch;
 
 describe("basic-interfaces", function(){
     var basicInterfaces = new BasicInterfaces();
-    it/*.skip*/("accepts boolean values", function(){
-        assert(basicInterfaces.boolean(true));
-        assert(basicInterfaces.boolean(false));
-        //assert(basicInterfaces.boolean.nullable(null));
+    it.skip("accepts boolean values", function(){
+        assert(basicInterfaces.boolean.control(true));
+        assert(basicInterfaces.boolean.control(false));
+        assert(basicInterfaces.boolean.nullable.control(null));
     });
     it("detect non boolean",function(){
         assertCatch(function(){
-            basicInterfaces.boolean("ufs");
+            basicInterfaces.boolean.control("ufs");
         },/BasicInterfaces non boolean value/);
     })
     it("detect non nullable",function(){
         assertCatch(function(){
-            basicInterfaces.boolean(null);
+            basicInterfaces.boolean.control(null);
         },/BasicInterfaces null value detected in boolean/);
     })
 });
