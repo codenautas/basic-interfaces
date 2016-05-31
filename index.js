@@ -5,4 +5,7 @@
 
 var BasicInterfaces = {};
 
+BasicInterfaces = function(){};
+
+
 module.exports = BasicInterfaces;
