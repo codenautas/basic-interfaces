@@ -54,12 +54,11 @@ class BooleanTBI extends TypedBasicInterface {
     }
 }
 
-BasicInterfaces = function(){
-    this.tbiBoolean = new BooleanTBI();
-};
+BasicInterfaces = function(){};
 
 BasicInterfaces.prototype.boolean = function boolean(value) {
-    return this.tbiBoolean.control(value);
+    var r = new BooleanTBI();
+    return r.control(value);
 };
 
 module.exports = BasicInterfaces;
