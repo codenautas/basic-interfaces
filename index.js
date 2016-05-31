@@ -40,11 +40,7 @@ class TypedBasicInterface extends BasicInterface {
     }
     control(value) {
         super.control(value);
-        //console.log("value", value)
-        if(value == null) {
-            throw new Error("BasicInterfaces null value detected in boolean");
-        }
-        if(typeof value !== this.typeName) {
+        if(value != null && typeof value !== this.typeName) {
             throw new Error("BasicInterfaces non "+this.typeName+" value");
         }
         return true;
@@ -63,5 +59,13 @@ BasicInterfaces = function(){};
         }
     });
 });
+
+class PlainBasicInterface extends BasicInterface {
+}
+
+BasicInterfaces.prototype.plain = function plain(definition){
+    return new PlainBasicInterface(definition);
+};
+
 
 module.exports = BasicInterfaces;
