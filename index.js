@@ -36,10 +36,17 @@ class TypedBasicInterface extends BasicInterface {
 class BooleanTBI extends TypedBasicInterface {
     constructor() {
         super('Boolean');
+        this.isNullable=false;
     }
     control(value) {
-        console.log("value", value, super.control(value) && (value === true || value===false))
-        return super.control(value) && (value === true || value===false);
+        //console.log("value", value)
+        if(value == null) {
+            throw new Error("BasicInterfaces null value detected in boolean");
+        }
+        if(value !== true && value!==false) {
+            throw new Error("BasicInterfaces non boolean value");
+        }
+        return true;
     }
     get nullable() {
         this.isNullable=false;
