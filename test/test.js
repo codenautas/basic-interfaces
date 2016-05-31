@@ -35,7 +35,7 @@ describe("basic-interfaces", function(){
                     name:basicInterfaces.string,
                     age:basicInterfaces.number,
                     isChief:basicInterfaces.boolean.nullable,
-                }).control({name:'Bob', age:42})
+                }).control({name:'Bob', age:42, isChief:false})
             );
         });
         it("detect bad attr type", function(){
@@ -47,14 +47,14 @@ describe("basic-interfaces", function(){
                 }).control({name:'Bob', age:'42', isChief:false})
             },/BasicInterfaces string value detected in number in property 'age'/);
         });
-        it.skip("detect lack mandatory attr type", function(){
+        it("detect lack mandatory attr type", function(){
             assertCatch(function(){
                 basicInterfaces.plain({
                     name:basicInterfaces.string,
-                    age:basicInterfaces.number,
+                    age:basicInterfaces.number.nullable,
                     isChief:basicInterfaces.boolean.nullable,
-                }).control({name:'Bob'})
-            },/BasicInterfaces lack of mandatory property 'ischief'/);
+                }).control({name:'Bob', age:12})
+            },/BasicInterfaces lack of mandatory property 'isChief'/);
         });
         it("detect extra attr", function(){
             assertCatch(function(){

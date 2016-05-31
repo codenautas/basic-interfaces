@@ -69,6 +69,7 @@ class PlainBasicInterface extends BasicInterface {
         this.definition = definition;
     }
     control(options) {
+        var properties = Object.keys(this.definition);
         for(var o in options) {
             if(! (o in this.definition)) {
                 throw new Error("BasicInterfaces unexpected property '"+o+"'");
@@ -78,8 +79,12 @@ class PlainBasicInterface extends BasicInterface {
             if(typeof check != def.description) {
                 throw new Error("BasicInterfaces "+(typeof check)+" value detected in "+def.description+" in property '"+o+"'")
             }
+            properties.splice(properties.indexOf(o), 1);
         }
-        
+        if(properties.length) {
+            // it will fail with the first one
+            throw new Error("BasicInterfaces lack of mandatory property '"+properties[0]+"'")
+        }
         return true;
     }
 }
