@@ -61,6 +61,26 @@ BasicInterfaces = function(){};
 });
 
 class PlainBasicInterface extends BasicInterface {
+    constructor(definition) {
+        super();
+        if(typeof definition !== 'object') {
+            throw new Error('BasicInterfaces constructor expects an object');
+        }
+        this.definition = definition;
+    }
+    control(options) {
+        for(var o in options) {
+            if(! o in this.definition) {
+                throw new Error('BasicInterfaces "'+o+'" in definition');
+            }
+            var def=this.definition[o];
+            var check=options[o];
+            if(typeof check != def.description) {
+                throw new Error("BasicInterfaces "+(typeof check)+" value detected in "+def.description+" in property '"+o+"'")
+            }
+        }
+        return true;
+    }
 }
 
 BasicInterfaces.prototype.plain = function plain(definition){

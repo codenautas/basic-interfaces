@@ -38,7 +38,7 @@ describe("basic-interfaces", function(){
                 }).control({name:'Bob', age:42})
             );
         });
-        it.skip("detect bad attr type", function(){
+        it("detect bad attr type", function(){
             assertCatch(function(){
                 basicInterfaces.plain({
                     name:basicInterfaces.string,
