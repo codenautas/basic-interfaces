@@ -56,7 +56,7 @@
     "coverage": 90,
     "run-in": "server",
     "stability": "extending",
-    "type": "cmd-tool",
+    "type": "lib",
     "ecmaVersion": 6
   }
 }
