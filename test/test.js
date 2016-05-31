@@ -7,6 +7,7 @@ var fs = require("fs-promise");
 //var semver = require('semver');
 var BasicInterfaces = require("..");
 var assert = require('self-explain').assert;
+var assertCatch = require('self-explain').assertCatch;
 
 describe("basic-interfaces", function(){
     var basicInterfaces = new BasicInterfaces();
@@ -15,5 +16,15 @@ describe("basic-interfaces", function(){
         assert(basicInterfaces.boolean(false));
         assert(basicInterfaces.boolean.nullable(null));
     });
+    it("detect non boolean",function(){
+        assertCatch(function(){
+            basicInterfaces.boolean("ufs")
+        },/BasicInterfaces non boolean value/);
+    })
+    it("detect non nullable",function(){
+        assertCatch(function(){
+            basicInterfaces.boolean(null)
+        },/BasicInterfaces null value detected in boolean/);
+    })
 });
 
