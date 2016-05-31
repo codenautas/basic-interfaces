@@ -56,7 +56,7 @@ describe("basic-interfaces", function(){
                 }).control({name:'Bob'})
             },/BasicInterfaces lack of mandatory property 'ischief'/);
         });
-        it.skip("detect extra attr", function(){
+        it("detect extra attr", function(){
             assertCatch(function(){
                 basicInterfaces.plain({
                     name:basicInterfaces.string,
