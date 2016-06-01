@@ -12,7 +12,7 @@ class BasicInterface {
             throw new TypeError("Cannot construct BasicInterface instances directly");
         }
         */
-        this.verboseMode = false;
+        this.verboseMode = true;
     }
     control(value){ 
         if(!this.isNullable && value==null){
@@ -75,7 +75,7 @@ class TypedBasicInterface extends BasicInterface {
 }
 
 BasicInterfaces = function(opts){
-    this.opts = opts;
+    this.opts = opts || {} ;
 };
 
 'boolean,string,number,object'.split(',').forEach(function(typeName){
