@@ -12,6 +12,10 @@ var assertEql = function(a,b) {
     eval(assert(! assert.allDifferences(a,b)));
 }
 
+var assertDiscrepances = function(plain, expected){
+    eval(assert(! assert.allDifferences(plain.discrepances,expected)));
+}
+
 describe("basic-interfaces", function(){
     var basicInterfaces = new BasicInterfaces({verbose:false});
     describe('typed', function(){
@@ -51,7 +55,7 @@ describe("basic-interfaces", function(){
             assertCatch(function(){
                 plain.control({name:'Bob', age:'42', isChief:false})
             },/BasicInterfaces has 1 error/);
-            assertEql(plain.discrepances,[ 'string value detected in number in property \'age\'' ]);
+            assertDiscrepances(plain,[ 'string value detected in number in property \'age\'' ]);
         });
         it("detect lack mandatory attr type", function(){
             plain=basicInterfaces.plain({
@@ -62,7 +66,7 @@ describe("basic-interfaces", function(){
             assertCatch(function(){
                 plain.control({name:'Bob', age:12})
             },/BasicInterfaces has 1 error/);
-            assertEql(plain.discrepances,[ "lack of mandatory property 'isChief'" ]);
+            assertDiscrepances(plain,[ "lack of mandatory property 'isChief'" ]);
         });
         it("detect extra attr", function(){
             plain=basicInterfaces.plain({
@@ -73,7 +77,7 @@ describe("basic-interfaces", function(){
             assertCatch(function(){
                 plain.control({name:'Bob', ischief:true})
             },/BasicInterfaces has 3 errors/);
-            assertEql(plain.discrepances,[ "unexpected property 'ischief'", "lack of mandatory property 'age'", "lack of mandatory property 'isChief'" ]);
+            assertDiscrepances(plain,[ "unexpected property 'ischief'", "lack of mandatory property 'age'", "lack of mandatory property 'isChief'" ]);
         });
     });
 });
