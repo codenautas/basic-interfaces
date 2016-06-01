@@ -30,6 +30,26 @@ class BasicInterface {
     get description(){
         return 'not nullable';
     }
+    discrepances(options) {
+        this.discrepances = [];
+        var properties = Object.keys(this.definition);
+        for(var o in options) {
+            if(! (o in this.definition)) {
+                this.discrepances.push("unexpected property '"+o+"'")
+            } else {
+                properties.splice(properties.indexOf(o), 1);
+                var def=this.definition[o];
+                var check=options[o];
+                if(typeof check != def.description) {
+                    this.discrepances.push((typeof check)+" value detected in "+def.description+" in property '"+o+"'");
+                    //throw new Error("BasicInterfaces "+(typeof check)+" value detected in "+def.description+" in property '"+o+"'")
+                }
+            }
+        }
+        for(var p=0; p<properties.length; ++p) {
+            this.discrepances.push("lack of mandatory property '"+properties[0]+"'");
+        }
+    }
 }
 
 class TypedBasicInterface extends BasicInterface {
@@ -73,26 +93,6 @@ class PlainBasicInterface extends BasicInterface {
             throw new Error('BasicInterfaces constructor expects an object');
         }
         this.definition = definition;
-    }
-    discrepances(options) {
-        this.discrepances = [];
-        var properties = Object.keys(this.definition);
-        for(var o in options) {
-            if(! (o in this.definition)) {
-                this.discrepances.push("unexpected property '"+o+"'")
-            } else {
-                properties.splice(properties.indexOf(o), 1);
-                var def=this.definition[o];
-                var check=options[o];
-                if(typeof check != def.description) {
-                    this.discrepances.push((typeof check)+" value detected in "+def.description+" in property '"+o+"'");
-                    //throw new Error("BasicInterfaces "+(typeof check)+" value detected in "+def.description+" in property '"+o+"'")
-                }
-            }
-        }
-        for(var p=0; p<properties.length; ++p) {
-            this.discrepances.push("lack of mandatory property '"+properties[0]+"'");
-        }
     }
     control(options) {
         this.discrepances(options);
