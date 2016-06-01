@@ -14,10 +14,18 @@ class BasicInterface {
         */
     }
     control(value){ 
-        if(!this.isNullable && value==null){
-            throw new Error('Error BasicInterfaces null value detected in '+this.description);
+        var discrepances=this.discrepances(value);
+        if(discrepances!==null){
+            console.log(discrepances); // mejor que sea opcional
+            throw new Error('BasicInterfaces discrepances detected '+JSON.stringify(discrepances));
         }
         return true;
+    }
+    discrepances(value){ 
+        if(!this.isNullable && value==null){
+            return 'null value detected in '+this.description;
+        }
+        return null;
     }
     get nullable(){
         this.isNullable=true;
@@ -38,12 +46,10 @@ class TypedBasicInterface extends BasicInterface {
         super();
         this.typeName = typeName;
     }
-    control(value) {
-        super.control(value);
-        if(value != null && typeof value !== this.typeName) {
-            throw new Error("BasicInterfaces non "+this.typeName+" value");
-        }
-        return true;
+    discrepances(value) {
+        return super.discrepances(value) || (
+            value != null && typeof value !== this.typeName ? typeof value +" value in "+this.typeName : null
+        );
     }
     get description(){
         return this.typeName;
@@ -61,6 +67,39 @@ BasicInterfaces = function(){};
 });
 
 class PlainBasicInterface extends BasicInterface {
+    constructor(definition){
+        super();
+        this.definition = definition;
+    }
+    discrepances(obj){
+        var self=this;
+        var result = super.discrepances(obj);
+        if(result){
+            return result;
+        }
+        result = {};
+        var keys=Object.keys(obj);
+        keys.forEach(function(key){
+            if(key in self.definition){
+                var localResult = self.definition[key].discrepances(obj[key]);
+                if(localResult != null){
+                    result[key] = localResult;
+                }
+            }else{
+                result[key] = "unexpected property";
+            }
+        });
+        var keys=Object.keys(self.definition);
+        keys.forEach(function(key){
+            if(!self.definition[key].isNullable && !(key in obj)){
+                result[key] = "lack mandatory property";
+            }
+        });
+        for(var k in result){
+            return result;
+        }
+        return null;
+    }
 }
 
 BasicInterfaces.prototype.plain = function plain(definition){
