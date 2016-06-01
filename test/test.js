@@ -58,20 +58,22 @@ describe("basic-interfaces", function(){
                 name:basicInterfaces.string,
                 age:basicInterfaces.number.nullable,
                 isChief:basicInterfaces.boolean.nullable,
-            })
+            });
             assertCatch(function(){
                 plain.control({name:'Bob', age:12})
             },/BasicInterfaces has 1 error/);
             assertEql(plain.discrepances,[ "lack of mandatory property 'isChief'" ]);
         });
-        it.skip("detect extra attr", function(){
+        it("detect extra attr", function(){
+            plain=basicInterfaces.plain({
+                name:basicInterfaces.string,
+                age:basicInterfaces.number,
+                isChief:basicInterfaces.boolean.nullable,
+            });
             assertCatch(function(){
-                basicInterfaces.plain({
-                    name:basicInterfaces.string,
-                    age:basicInterfaces.number,
-                    isChief:basicInterfaces.boolean.nullable,
-                }).control({name:'Bob', age:42, ischief:true})
-            },/BasicInterfaces unexpected property 'ischief'/);
+                plain.control({name:'Bob', ischief:true})
+            },/BasicInterfaces has 3 errors/);
+            assertEql(plain.discrepances,[ "unexpected property 'ischief'", "lack of mandatory property 'age'", "lack of mandatory property 'isChief'" ]);
         });
     });
 });

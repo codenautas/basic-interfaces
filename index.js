@@ -46,12 +46,11 @@ class BasicInterface {
                 var check=options[o];
                 if(typeof check != def.description) {
                     this.discrepances.push((typeof check)+" value detected in "+def.description+" in property '"+o+"'");
-                    //throw new Error("BasicInterfaces "+(typeof check)+" value detected in "+def.description+" in property '"+o+"'")
                 }
             }
         }
         for(var p=0; p<properties.length; ++p) {
-            this.discrepances.push("lack of mandatory property '"+properties[0]+"'");
+            this.discrepances.push("lack of mandatory property '"+properties[p]+"'");
         }
     }
 }
