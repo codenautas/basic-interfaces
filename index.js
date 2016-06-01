@@ -12,12 +12,16 @@ class BasicInterface {
             throw new TypeError("Cannot construct BasicInterface instances directly");
         }
         */
+        this.verboseMode = false;
     }
     control(value){ 
         if(!this.isNullable && value==null){
             throw new Error('Error BasicInterfaces null value detected in '+this.description);
         }
         return true;
+    }
+    verbose(yesNo) {
+        this.verboseMode = yesNo;
     }
     get nullable(){
         this.isNullable=true;
@@ -50,7 +54,9 @@ class TypedBasicInterface extends BasicInterface {
     }
 }
 
-BasicInterfaces = function(){};
+BasicInterfaces = function(opts){
+    this.opts = opts;
+};
 
 'boolean,string,number,object'.split(',').forEach(function(typeName){
     Object.defineProperty(BasicInterfaces.prototype, typeName,{
@@ -68,29 +74,40 @@ class PlainBasicInterface extends BasicInterface {
         }
         this.definition = definition;
     }
-    control(options) {
+    discrepances(options) {
+        this.discrepances = [];
         var properties = Object.keys(this.definition);
         for(var o in options) {
             if(! (o in this.definition)) {
-                throw new Error("BasicInterfaces unexpected property '"+o+"'");
+                this.discrepances.push("unexpected property '"+o+"'")
+            } else {
+                properties.splice(properties.indexOf(o), 1);
+                var def=this.definition[o];
+                var check=options[o];
+                if(typeof check != def.description) {
+                    this.discrepances.push((typeof check)+" value detected in "+def.description+" in property '"+o+"'");
+                    //throw new Error("BasicInterfaces "+(typeof check)+" value detected in "+def.description+" in property '"+o+"'")
+                }
             }
-            var def=this.definition[o];
-            var check=options[o];
-            if(typeof check != def.description) {
-                throw new Error("BasicInterfaces "+(typeof check)+" value detected in "+def.description+" in property '"+o+"'")
-            }
-            properties.splice(properties.indexOf(o), 1);
         }
-        if(properties.length) {
-            // it will fail with the first one
-            throw new Error("BasicInterfaces lack of mandatory property '"+properties[0]+"'")
+        for(var p=0; p<properties.length; ++p) {
+            this.discrepances.push("lack of mandatory property '"+properties[0]+"'");
+        }
+    }
+    control(options) {
+        this.discrepances(options);
+        if(this.discrepances.length) {
+            if(this.verboseMode) { console.log(this.discrepances); }
+            throw new Error('BasicInterfaces has '+this.discrepances.length+' error'+(this.discrepances.length==1?'':'s'));
         }
         return true;
     }
 }
 
 BasicInterfaces.prototype.plain = function plain(definition){
-    return new PlainBasicInterface(definition);
+    var pbi = new PlainBasicInterface(definition);
+    pbi.verbose(this.opts.verbose);
+    return pbi;
 };
 
 
