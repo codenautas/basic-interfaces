@@ -32,6 +32,7 @@ describe("basic-interfaces", function(){
         })
     });
     describe('plain', function(){
+        var plain;
         it("accept ok", function(){
             assert(
                 basicInterfaces.plain({
@@ -42,24 +43,26 @@ describe("basic-interfaces", function(){
             );
         });
         it("detect bad attr type", function(){
-            var plain=basicInterfaces.plain({
-                    name:basicInterfaces.string,
-                    age:basicInterfaces.number,
-                    isChief:basicInterfaces.boolean.nullable,
-                });
+            plain=basicInterfaces.plain({
+                name:basicInterfaces.string,
+                age:basicInterfaces.number,
+                isChief:basicInterfaces.boolean.nullable,
+            });
             assertCatch(function(){
                 plain.control({name:'Bob', age:'42', isChief:false})
             },/BasicInterfaces has 1 error/);
             assertEql(plain.discrepances,[ 'string value detected in number in property \'age\'' ]);
         });
-        it.skip("detect lack mandatory attr type", function(){
+        it("detect lack mandatory attr type", function(){
+            plain=basicInterfaces.plain({
+                name:basicInterfaces.string,
+                age:basicInterfaces.number.nullable,
+                isChief:basicInterfaces.boolean.nullable,
+            })
             assertCatch(function(){
-                basicInterfaces.plain({
-                    name:basicInterfaces.string,
-                    age:basicInterfaces.number.nullable,
-                    isChief:basicInterfaces.boolean.nullable,
-                }).control({name:'Bob', age:12})
-            },/BasicInterfaces lack of mandatory property 'isChief'/);
+                plain.control({name:'Bob', age:12})
+            },/BasicInterfaces has 1 error/);
+            assertEql(plain.discrepances,[ "lack of mandatory property 'isChief'" ]);
         });
         it.skip("detect extra attr", function(){
             assertCatch(function(){
