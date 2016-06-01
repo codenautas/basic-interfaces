@@ -6,12 +6,16 @@
 var BasicInterfaces = {};
 
 class BasicInterface {
-    constructor() {
+    constructor(definition) {
         /*
         if(new.target === BasicInterface) {
             throw new TypeError("Cannot construct BasicInterface instances directly");
         }
         */
+        if(typeof definition === 'object') {
+            this.definition = definition;
+            //throw new Error('BasicInterfaces constructor expects an object');
+        }
         this.verboseMode = true;
     }
     control(value){ 
@@ -88,11 +92,7 @@ BasicInterfaces = function(opts){
 
 class PlainBasicInterface extends BasicInterface {
     constructor(definition) {
-        super();
-        if(typeof definition !== 'object') {
-            throw new Error('BasicInterfaces constructor expects an object');
-        }
-        this.definition = definition;
+        super(definition);
     }
     control(options) {
         this.discrepances(options);
