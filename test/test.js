@@ -7,10 +7,6 @@ var fs = require("fs-promise");
 var BasicInterfaces = require("..");
 var assert = require('self-explain').assert;
 var assertCatch = require('self-explain').assertCatch;
-var assertEql = function(a,b) {
-    // el eval() es para que muestre los errores!
-    eval(assert(! assert.allDifferences(a,b)));
-}
 
 var assertDiscrepances = function(plain, expected){
     eval(assert(! assert.allDifferences(plain.discrepances,expected)));
