@@ -81,7 +81,9 @@ describe("basic-interfaces", function(){
     });
     describe('input errors', function(){
         var inputs = [
-            {param:[], expected:'Array'}
+            {param:[], expected:'Array'},
+            {param:new Date(), expected:'Date'},
+            {param:new RegExp("dummy"), expected:'RegExp'},
         ];
         'boolean,string,number,object'.split(',').forEach(function(typeName) {
             inputs.forEach(function(input) {
@@ -89,7 +91,7 @@ describe("basic-interfaces", function(){
                     var err = new RegExp('invalid '+input.expected+' input');
                     assertCatch(function() {
                         var obj = basicInterfaces[typeName];
-                        obj.discrepances([])
+                        obj.discrepances(input.param);
                     }, err);
                 });
             });

@@ -22,9 +22,9 @@ class BasicInterface {
         return true;
     }
     discrepances(value){
-        if(value instanceof Array) {
-            throw new Error('invalid Array input');
-        }
+        if(value instanceof Array) { throw new Error('invalid Array input'); }
+        if(value instanceof Date) { throw new Error('invalid Date input'); }
+        if(value instanceof RegExp) { throw new Error('invalid RegExp input'); }
         if(!this.isNullable && value==null){
             return 'null value detected in '+this.description;
         }
