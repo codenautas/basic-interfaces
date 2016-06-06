@@ -80,19 +80,20 @@ describe("basic-interfaces", function(){
         });
     });
     describe('input errors', function(){
-        var inputs = [
+        var errors = [
             {param:[], expected:'Array'},
             {param:new Date(), expected:'Date'},
             {param:new RegExp("dummy"), expected:'RegExp'},
+            {param:function(){}, expected:'Function'},
         ];
         'boolean,string,number,object'.split(',').forEach(function(typeName) {
-            inputs.forEach(function(input) {
-                it(typeName+".discrepances("+input.expected+')',function(){
-                    var err = new RegExp('invalid '+input.expected+' input');
+            errors.forEach(function(err) {
+                it(typeName+".discrepances("+err.expected+')',function(){
+                    var error = new RegExp('invalid '+err.expected+' input');
                     assertCatch(function() {
                         var obj = basicInterfaces[typeName];
-                        obj.discrepances(input.param);
-                    }, err);
+                        obj.discrepances(err.param);
+                    }, error);
                 });
             });
         })

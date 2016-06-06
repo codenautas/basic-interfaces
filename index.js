@@ -5,6 +5,8 @@
 
 var BasicInterfaces = {};
 
+var constructorName = require('best-globals').constructorName;
+
 class BasicInterface {
     constructor() {
         /*
@@ -22,9 +24,11 @@ class BasicInterface {
         return true;
     }
     discrepances(value){
-        if(value instanceof Array) { throw new Error('invalid Array input'); }
-        if(value instanceof Date) { throw new Error('invalid Date input'); }
-        if(value instanceof RegExp) { throw new Error('invalid RegExp input'); }
+        var inputName = constructorName(value);
+        switch(inputName) {
+            case 'Date': case 'Array': case 'RegExp': case 'Function':
+                throw new Error('invalid '+inputName+' input');
+        }
         if(!this.isNullable && value==null){
             return 'null value detected in '+this.description;
         }
