@@ -22,7 +22,7 @@
     "istanbul": "~0.4.3",
     "mocha": "~2.5.3",
     
-    "self-explain": "~0.10.2"
+    "self-explain": "~0.10.3"
   },
   "engines": {
     "node": ">= 0.12"

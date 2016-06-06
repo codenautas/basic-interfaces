@@ -9,12 +9,6 @@ var assert = require('self-explain').assert;
 var differences = assert.allDifferences;
 var assertCatch = require('self-explain').assertCatch;
 
-function leva(x){
-    // esta función debe desaparecer y las ocurrencias de EVAL reemplazarse por eval
-    // cuando esté cerrado: https://github.com/codenautas/self-explain/issues/11
-    return x;
-}
-
 describe("basic-interfaces", function(){
     var basicInterfaces = new BasicInterfaces();
     describe('typed', function(){
@@ -32,7 +26,7 @@ describe("basic-interfaces", function(){
     });
     describe('plain', function(){
         it("accept ok", function(){
-            leva(assert(
+            eval(assert(
                 basicInterfaces.plain({
                     name:basicInterfaces.string,
                     age:basicInterfaces.number,
@@ -41,7 +35,7 @@ describe("basic-interfaces", function(){
             ));
         });
         it("detect bad attr type", function(){
-            leva(assert(!differences(
+            eval(assert(!differences(
                 basicInterfaces.plain({
                     name:basicInterfaces.string,
                     age:basicInterfaces.number,
@@ -51,7 +45,7 @@ describe("basic-interfaces", function(){
             )));
         });
         it("detect lack mandatory attr type", function(){
-            leva(assert(!differences(
+            eval(assert(!differences(
                 basicInterfaces.plain({
                     name:basicInterfaces.string,
                     age:basicInterfaces.number,
@@ -61,7 +55,7 @@ describe("basic-interfaces", function(){
             )));
         });
         it("detect extra attr", function(){
-            leva(assert(!differences(
+            eval(assert(!differences(
                 basicInterfaces.plain({
                     name:basicInterfaces.string,
                     age:basicInterfaces.number,
@@ -71,7 +65,7 @@ describe("basic-interfaces", function(){
             )));
         });
         it("various detects", function(){
-            leva(assert(!differences(
+            eval(assert(!differences(
                 basicInterfaces.plain({
                     name:basicInterfaces.string,
                     age:basicInterfaces.number,
