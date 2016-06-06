@@ -2,7 +2,6 @@
 
 var Path = require('path');
 
-var expect = require("expect.js");
 var fs = require("fs-promise");
 //var semver = require('semver');
 var BasicInterfaces = require("..");
