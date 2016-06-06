@@ -6,26 +6,26 @@
 var BasicInterfaces = {};
 
 class BasicInterface {
-    constructor(definition) {
+    constructor() {
         /*
         if(new.target === BasicInterface) {
             throw new TypeError("Cannot construct BasicInterface instances directly");
         }
         */
-        if(typeof definition === 'object') {
-            this.definition = definition;
-            //throw new Error('BasicInterfaces constructor expects an object');
-        }
-        this.verboseMode = true;
     }
     control(value){ 
-        if(!this.isNullable && value==null){
-            throw new Error('Error BasicInterfaces null value detected in '+this.description);
+        var discrepances=this.discrepances(value);
+        if(discrepances!==null){
+            console.log(discrepances); // mejor que sea opcional
+            throw new Error('BasicInterfaces discrepances detected '+JSON.stringify(discrepances));
         }
         return true;
     }
-    verbose(yesNo) {
-        this.verboseMode = yesNo;
+    discrepances(value){ 
+        if(!this.isNullable && value==null){
+            return 'null value detected in '+this.description;
+        }
+        return null;
     }
     get nullable(){
         this.isNullable=true;
@@ -33,25 +33,6 @@ class BasicInterface {
     }
     get description(){
         return 'not nullable';
-    }
-    discrepances(options) {
-        this.discrepances = [];
-        var properties = Object.keys(this.definition);
-        for(var o in options) {
-            if(! (o in this.definition)) {
-                this.discrepances.push("unexpected property '"+o+"'")
-            } else {
-                properties.splice(properties.indexOf(o), 1);
-                var def=this.definition[o];
-                var check=options[o];
-                if(typeof check != def.description) {
-                    this.discrepances.push((typeof check)+" value detected in "+def.description+" in property '"+o+"'");
-                }
-            }
-        }
-        for(var p=0; p<properties.length; ++p) {
-            this.discrepances.push("lack of mandatory property '"+properties[p]+"'");
-        }
     }
 }
 
@@ -65,21 +46,17 @@ class TypedBasicInterface extends BasicInterface {
         super();
         this.typeName = typeName;
     }
-    control(value) {
-        super.control(value);
-        if(value != null && typeof value !== this.typeName) {
-            throw new Error("BasicInterfaces non "+this.typeName+" value");
-        }
-        return true;
+    discrepances(value) {
+        return super.discrepances(value) || (
+            value != null && typeof value !== this.typeName ? typeof value +" value in "+this.typeName : null
+        );
     }
     get description(){
         return this.typeName;
     }
 }
 
-BasicInterfaces = function(opts){
-    this.opts = opts || {} ;
-};
+BasicInterfaces = function(){};
 
 'boolean,string,number,object'.split(',').forEach(function(typeName){
     Object.defineProperty(BasicInterfaces.prototype, typeName,{
@@ -90,23 +67,43 @@ BasicInterfaces = function(opts){
 });
 
 class PlainBasicInterface extends BasicInterface {
-    constructor(definition) {
-        super(definition);
+    constructor(definition){
+        super();
+        this.definition = definition;
     }
-    control(options) {
-        this.discrepances(options);
-        if(this.discrepances.length) {
-            if(this.verboseMode) { console.log(this.discrepances); }
-            throw new Error('BasicInterfaces has '+this.discrepances.length+' error'+(this.discrepances.length==1?'':'s'));
+    discrepances(obj){
+        var self=this;
+        var result = super.discrepances(obj);
+        if(result){
+            return result;
         }
-        return true;
+        result = {};
+        var keys=Object.keys(obj);
+        keys.forEach(function(key){
+            if(key in self.definition){
+                var localResult = self.definition[key].discrepances(obj[key]);
+                if(localResult != null){
+                    result[key] = localResult;
+                }
+            }else{
+                result[key] = "unexpected property";
+            }
+        });
+        var keys=Object.keys(self.definition);
+        keys.forEach(function(key){
+            if(!self.definition[key].isNullable && !(key in obj)){
+                result[key] = "lack mandatory property";
+            }
+        });
+        for(var k in result){
+            return result;
+        }
+        return null;
     }
 }
 
 BasicInterfaces.prototype.plain = function plain(definition){
-    var pbi = new PlainBasicInterface(definition);
-    pbi.verbose(this.opts.verbose);
-    return pbi;
+    return new PlainBasicInterface(definition);
 };
 
 

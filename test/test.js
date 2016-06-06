@@ -6,74 +6,77 @@ var fs = require("fs-promise");
 //var semver = require('semver');
 var BasicInterfaces = require("..");
 var assert = require('self-explain').assert;
+var differences = assert.allDifferences;
 var assertCatch = require('self-explain').assertCatch;
 
-var assertDiscrepances = function(plain, expected){
-    eval(assert(! assert.allDifferences(plain.discrepances,expected)));
-}
-
 describe("basic-interfaces", function(){
-    var basicInterfaces = new BasicInterfaces({verbose:false});
+    var basicInterfaces = new BasicInterfaces();
     describe('typed', function(){
         it("accepts boolean values", function(){
-            assert(basicInterfaces.boolean.control(true));
-            assert(basicInterfaces.boolean.control(false));
-            assert(basicInterfaces.boolean.nullable.control(null));
+            eval(assert(!differences(basicInterfaces.boolean.discrepances(true),null)));
+            eval(assert(!differences(basicInterfaces.boolean.discrepances(false),null)));
+            eval(assert(!differences(basicInterfaces.boolean.nullable.discrepances(null),null)));
         });
         it("detect non boolean",function(){
-            assertCatch(function(){
-                basicInterfaces.boolean.control("ufs");
-            },/BasicInterfaces non boolean value/);
+            eval(assert(!differences(basicInterfaces.boolean.discrepances("ufs"), 'string value in boolean')));
         })
         it("detect non nullable",function(){
-            assertCatch(function(){
-                basicInterfaces.boolean.control(null);
-            },/BasicInterfaces null value detected in boolean/);
+            eval(assert(!differences(basicInterfaces.boolean.discrepances(null),'null value detected in boolean')));
         })
     });
     describe('plain', function(){
-        var plain;
         it("accept ok", function(){
-            assert(
+            eval(assert(
                 basicInterfaces.plain({
                     name:basicInterfaces.string,
                     age:basicInterfaces.number,
                     isChief:basicInterfaces.boolean.nullable,
-                }).control({name:'Bob', age:42, isChief:false})
-            );
+                }).discrepances({name:'Bob', age:42}) === null 
+            ));
         });
         it("detect bad attr type", function(){
-            plain=basicInterfaces.plain({
-                name:basicInterfaces.string,
-                age:basicInterfaces.number,
-                isChief:basicInterfaces.boolean.nullable,
-            });
-            assertCatch(function(){
-                plain.control({name:'Bob', age:'42', isChief:false})
-            },/BasicInterfaces has 1 error/);
-            assertDiscrepances(plain,[ 'string value detected in number in property \'age\'' ]);
+            eval(assert(!differences(
+                basicInterfaces.plain({
+                    name:basicInterfaces.string,
+                    age:basicInterfaces.number,
+                    isChief:basicInterfaces.boolean.nullable,
+                }).discrepances({name:'Bob', age:'42', isChief:false}),
+                {age:"string value in number"}
+            )));
         });
         it("detect lack mandatory attr type", function(){
-            plain=basicInterfaces.plain({
-                name:basicInterfaces.string,
-                age:basicInterfaces.number.nullable,
-                isChief:basicInterfaces.boolean.nullable,
-            });
-            assertCatch(function(){
-                plain.control({name:'Bob', age:12})
-            },/BasicInterfaces has 1 error/);
-            assertDiscrepances(plain,[ "lack of mandatory property 'isChief'" ]);
+            eval(assert(!differences(
+                basicInterfaces.plain({
+                    name:basicInterfaces.string,
+                    age:basicInterfaces.number,
+                    isChief:basicInterfaces.boolean.nullable,
+                }).discrepances({name:'Bob'}),
+                {age:'lack mandatory property'}
+            )));
         });
         it("detect extra attr", function(){
-            plain=basicInterfaces.plain({
-                name:basicInterfaces.string,
-                age:basicInterfaces.number,
-                isChief:basicInterfaces.boolean.nullable,
-            });
-            assertCatch(function(){
-                plain.control({name:'Bob', ischief:true})
-            },/BasicInterfaces has 3 errors/);
-            assertDiscrepances(plain,[ "unexpected property 'ischief'", "lack of mandatory property 'age'", "lack of mandatory property 'isChief'" ]);
+            eval(assert(!differences(
+                basicInterfaces.plain({
+                    name:basicInterfaces.string,
+                    age:basicInterfaces.number,
+                    isChief:basicInterfaces.boolean.nullable,
+                }).discrepances({name:'Bob', age:42, ischief:true}),
+                {ischief:'unexpected property'}
+            )));
+        });
+        it("various detects", function(){
+            eval(assert(!differences(
+                basicInterfaces.plain({
+                    name:basicInterfaces.string,
+                    age:basicInterfaces.number,
+                    isChief:basicInterfaces.boolean.nullable,
+                }).discrepances({names:'Tom & Bob', age:'42'}),
+                {
+                    names:'unexpected property',
+                    age:"string value in number",
+                    name:'lack mandatory property'
+                }
+            )));
         });
     });
 });
