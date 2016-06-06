@@ -79,5 +79,10 @@ describe("basic-interfaces", function(){
             )));
         });
     });
+    describe('input errors', function(){
+        it("discrepances",function(){
+            eval(assert(!assertCatch(function() { throw new Error("hhh"); }, /hhh/)));
+        })
+    });
 });
 
