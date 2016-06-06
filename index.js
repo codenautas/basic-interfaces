@@ -21,7 +21,10 @@ class BasicInterface {
         }
         return true;
     }
-    discrepances(value){ 
+    discrepances(value){
+        if(value instanceof Array) {
+            throw new Error('invalid Array input');
+        }
         if(!this.isNullable && value==null){
             return 'null value detected in '+this.description;
         }
