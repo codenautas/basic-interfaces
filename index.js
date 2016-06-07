@@ -73,10 +73,16 @@ BasicInterfaces = function(){};
     });
 });
 
-class PlainBasicInterface extends BasicInterface {
+class ParametrizedInterface extends BasicInterface {
     constructor(definition){
         super();
         this.definition = definition;
+    }
+}
+
+class PlainBasicInterface extends ParametrizedInterface {
+    constructor(definition){
+        super(definition);
     }
     discrepances(obj){
         var self=this;
