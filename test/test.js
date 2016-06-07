@@ -105,6 +105,13 @@ describe("basic-interfaces", function(){
                     assertCatch(function() { plain.discrepances(err.param); }, error);
                 });
             });
+            [null, undefined].forEach(function(badInput) {
+                it('constructor should reject '+JSON.stringify(badInput)+' definition', function() {
+                    assertCatch(function() {
+                        basicInterfaces.plain(badInput);
+                    }, /invalid definition/);
+                }); 
+            });
         });
     });
 });

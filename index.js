@@ -76,6 +76,9 @@ BasicInterfaces = function(){};
 class ParametrizedInterface extends BasicInterface {
     constructor(definition){
         super();
+        if(definition==null) {
+            throw new Error('invalid definition');
+        }
         this.definition = definition;
     }
 }
