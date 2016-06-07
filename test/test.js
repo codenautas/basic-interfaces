@@ -3,11 +3,18 @@
 var Path = require('path');
 
 var fs = require("fs-promise");
-//var semver = require('semver');
+var sinon = require('sinon');
 var BasicInterfaces = require("..");
 var assert = require('self-explain').assert;
 var differences = assert.allDifferences;
 var assertCatch = require('self-explain').assertCatch;
+var sinon = require('sinon');
+
+/*
+
+AGREGAR tests:
+    Ej assert catch bi.boolean.control (1)
+*/
 
 describe("basic-interfaces", function(){
     var basicInterfaces = new BasicInterfaces({debug:false});
@@ -29,6 +36,9 @@ describe("basic-interfaces", function(){
         it("detect non nullable",function(){
             eval(assert(!differences(basicInterfaces.boolean.discrepances(null),'null value detected in boolean')));
         });
+        it("control ok",function(){
+            eval(assert( basicInterfaces.boolean.control(true) ));
+        });
         describe('input errors', function(){
             'boolean,string,number,object'.split(',').forEach(function(typeName) {
                 discrepanceErrors.forEach(function(err) {
@@ -40,7 +50,20 @@ describe("basic-interfaces", function(){
                         }, error);
                     });
                 });
-            })
+            });
+            [
+                {type:'boolean', bad:1},
+                {type:'string',  bad:2},
+                {type:'number',  bad:'str'},
+                {type:'object',  bad:3},
+            ].forEach(function(ctrl) {
+                it(ctrl.type+'.control('+ctrl.bad+')', function() {
+                   assertCatch(function() {
+                       var obj = basicInterfaces[ctrl.type];
+                       obj.control(ctrl.bad);
+                   }, /BasicInterfaces discrepances detected/);
+                });
+            });
         });
     });
     describe('plain', function(){
@@ -121,6 +144,16 @@ describe("basic-interfaces", function(){
                     }).control(/*undefined*/);
                 }, /BasicInterfaces discrepances detected/); 
             });
+        });
+    });
+    describe('coverage', function(){
+        it('default options', function() {
+           sinon.stub(console, 'log', function() {});
+           assertCatch(function() {
+               var bi = new BasicInterfaces();
+               bi.string.control(1);
+           },/BasicInterfaces discrepances detected/);
+           console.log.restore();
         });
     });
 });
