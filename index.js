@@ -96,15 +96,13 @@ class PlainBasicInterface extends BasicInterface {
                 result[key] = "unexpected property";
             }
         });
-        var keys=Object.keys(self.definition);
+        keys=Object.keys(self.definition);
         keys.forEach(function(key){
             if(!self.definition[key].isNullable && !(key in obj)){
                 result[key] = "lack mandatory property";
             }
         });
-        for(var k in result){
-            return result;
-        }
+        if(Object.keys(result).length) { return result; }
         return null;
     }
 }
