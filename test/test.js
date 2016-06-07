@@ -10,7 +10,7 @@ var differences = assert.allDifferences;
 var assertCatch = require('self-explain').assertCatch;
 
 describe("basic-interfaces", function(){
-    var basicInterfaces = new BasicInterfaces();
+    var basicInterfaces = new BasicInterfaces({debug:false});
     var discrepanceErrors = [
         {param:[], expected:'Array'},
         {param:new Date(), expected:'Date'},

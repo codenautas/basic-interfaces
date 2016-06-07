@@ -10,14 +10,18 @@ var constructorName = require('best-globals').constructorName;
 class BasicInterface {
     constructor() {
         if(this.constructor === BasicInterface) { throw new TypeError("Cannot construct BasicInterface instances directly");  }
+        this.enableDebug = true;
     }
     control(value){ 
         var discrepances=this.discrepances(value);
         if(discrepances!==null){
-            console.log(discrepances); // mejor que sea opcional
+            if(this.enableDebug) { console.log(discrepances); }
             throw new Error('BasicInterfaces discrepances detected '+JSON.stringify(discrepances));
         }
         return true;
+    }
+    debug(yesNo) {
+        this.enableDebug = yesNo;
     }
     discrepances(value){
         var inputName = constructorName(value);
@@ -54,12 +58,19 @@ class TypedBasicInterface extends BasicInterface {
     }
 }
 
-BasicInterfaces = function(){};
+BasicInterfaces = function BasicInterface(opts){
+    this.opts = opts || {};
+    if(! ('debug' in this.opts)) {
+        this.opts.debug = true;
+    }
+};
 
 'boolean,string,number,object'.split(',').forEach(function(typeName){
     Object.defineProperty(BasicInterfaces.prototype, typeName,{
         get: function () {
-            return new TypedBasicInterface(typeName);
+            var tbi = new TypedBasicInterface(typeName);
+            tbi.debug(this.opts.debug);
+            return tbi;
         }
     });
 });
@@ -111,7 +122,9 @@ class PlainBasicInterface extends ParametrizedInterface {
 }
 
 BasicInterfaces.prototype.plain = function plain(definition){
-    return new PlainBasicInterface(definition);
+    var pbi = new PlainBasicInterface(definition);
+    pbi.debug(this.opts.debug);
+    return pbi;
 };
 
 
