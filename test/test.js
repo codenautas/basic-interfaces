@@ -143,6 +143,12 @@ describe("basic-interfaces", function(){
                 ['parameter #2: string value in number']
             )));
         });
+        it("various detects", function(){
+            eval(assert(!differences(
+                basicInterfaces.array(arrayDef).discrepances([1000, 'Tom & Bob', 9]),
+                ['parameter #1: number value in string', 'parameter #2: string value in number', 'parameter #3: number value in boolean']
+            )));
+        });
         describe("input errors", function(){
             var arr = basicInterfaces.array([basicInterfaces.string]);
             [ {},"string",3,3.4 ].forEach(function(err) {
