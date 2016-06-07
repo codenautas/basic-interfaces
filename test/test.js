@@ -144,6 +144,11 @@ describe("basic-interfaces", function(){
             )));
         });
         describe("input errors", function(){
+            it("control()", function(){
+                assertCatch(function() {
+                    basicInterfaces.array(arrayDef).control(/*undefined*/);
+                }, /BasicInterfaces discrepances detected/); 
+            });
             it("constructor(definition)", function(){
                 assertCatch(function() {
                     basicInterfaces.array({});
