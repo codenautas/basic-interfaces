@@ -131,4 +131,17 @@ BasicInterfaces.prototype.plain = function plain(definition){
     return this.init(new PlainBasicInterface(definition));
 };
 
+class ArrayBasicInterface extends ParametrizedInterface {
+    constructor(definition){
+        super(definition);
+        if(constructorName(definition) !== 'Array') {
+            throw new TypeError('definition should be an Array');
+        }
+    }
+}
+
+BasicInterfaces.prototype.array = function array(definition){
+    return this.init(new ArrayBasicInterface(definition));
+};
+
 module.exports = BasicInterfaces;

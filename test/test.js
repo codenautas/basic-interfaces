@@ -151,6 +151,15 @@ describe("basic-interfaces", function(){
             });
         });
     });
+    describe('array', function(){
+        describe("input errors", function(){
+            it("constructor(definition)", function(){
+                assertCatch(function() {
+                    basicInterfaces.array({});
+                }, /definition should be an Array/); 
+            });
+        });
+    });
     describe('coverage', function(){
         it('default options', function() {
            sinon.stub(console, 'log', function() {});
