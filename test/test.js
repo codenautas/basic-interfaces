@@ -112,6 +112,15 @@ describe("basic-interfaces", function(){
                     }, /invalid definition/);
                 }); 
             });
+            it("control", function(){
+                assertCatch(function() {
+                    basicInterfaces.plain({
+                        name:basicInterfaces.string,
+                        age:basicInterfaces.number,
+                        isChief:basicInterfaces.boolean.nullable,
+                    }).control(/* undefined*/);
+                }, /BasicInterfaces discrepances detected/); 
+            });
         });
     });
 });

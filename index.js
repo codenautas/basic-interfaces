@@ -15,7 +15,6 @@ class BasicInterface {
         }
         */
     }
-    /*
     control(value){ 
         var discrepances=this.discrepances(value);
         if(discrepances!==null){
@@ -24,7 +23,6 @@ class BasicInterface {
         }
         return true;
     }
-    */
     discrepances(value){
         var inputName = constructorName(value);
         switch(inputName) {
