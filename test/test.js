@@ -115,22 +115,31 @@ describe("basic-interfaces", function(){
         });
     });
     describe('array', function(){
+        var arrayDef = [
+            basicInterfaces.string,
+            basicInterfaces.number,
+            basicInterfaces.boolean.nullable,
+        ];
         it("accept ok", function(){
             eval(assert(
-                basicInterfaces.array([
-                    basicInterfaces.string,
-                    basicInterfaces.number,
-                    basicInterfaces.boolean.nullable,
-                ]).discrepances(['Bob', 42]) === null 
+                basicInterfaces.array(arrayDef).discrepances(['Bob', 42]) === null 
             ));
+        });
+        it("detect missing parameters", function(){
+            eval(assert(!differences(
+                basicInterfaces.array(arrayDef).discrepances(['Bob']),
+                ['missing mandatory parameters: 1']
+            )));
+        });
+        it("detect exceeding parameters", function(){
+            eval(assert(!differences(
+                basicInterfaces.array(arrayDef).discrepances(['Bob',122,true,'John', 'Paul']),
+                ['left over parameters: 2']
+            )));
         });
         it("detect bad parameter type", function(){
             eval(assert(!differences(
-                basicInterfaces.array([
-                    basicInterfaces.string,
-                    basicInterfaces.number,
-                    basicInterfaces.boolean.nullable,
-                ]).discrepances(['Bob', '42', false]),
+                basicInterfaces.array(arrayDef).discrepances(['Bob', '42', false]),
                 ['parameter #2: string value in number']
             )));
         });

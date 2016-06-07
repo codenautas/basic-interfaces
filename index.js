@@ -152,6 +152,7 @@ class ArrayBasicInterface extends ParametrizedInterface {
         if(arr.length > self.definition.length) {
             result.push('left over parameters: '+(arr.length-self.definition.length));
         }
+        if(result.length) { return result; }
         for(var p=0; p<arr.length; ++p) {
             var localResult = self.definition[p].discrepances(arr[p]);
             if(localResult != null){
