@@ -135,6 +135,32 @@ class ArrayBasicInterface extends ParametrizedInterface {
         super(definition);
         this.check(definition);
     }
+    discrepances(arr){
+        var self=this;
+        var result = super.discrepances(arr);
+        if(result){
+            return result;
+        }
+        this.check(arr);
+        result = [];
+        var mandatoryCount = self.definition.filter(function(elem) {
+            return ! elem.isNullable;
+        }).length;
+        if(arr.length < mandatoryCount) {
+            result.push('missing mandatory parameters: '+(mandatoryCount-arr.length));
+        }
+        if(arr.length > self.definition.length) {
+            result.push('left over parameters: '+(arr.length-self.definition.length));
+        }
+        for(var p=0; p<arr.length; ++p) {
+            var localResult = self.definition[p].discrepances(arr[p]);
+            if(localResult != null){
+                result.push('parameter #'+(p+1)+': '+ localResult);
+            }
+        }
+        if(result.length) { return result; }
+        return null;
+    }
     check(input) {
         if(constructorName(input) !== 'Array') {
             throw new TypeError('definition should be an Array');

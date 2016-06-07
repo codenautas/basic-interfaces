@@ -134,6 +134,25 @@ describe("basic-interfaces", function(){
         });
     });
     describe('array', function(){
+        it("accept ok", function(){
+            eval(assert(
+                basicInterfaces.array([
+                    basicInterfaces.string,
+                    basicInterfaces.number,
+                    basicInterfaces.boolean.nullable,
+                ]).discrepances(['Bob', 42]) === null 
+            ));
+        });
+        it("detect bad parameter type", function(){
+            eval(assert(!differences(
+                basicInterfaces.array([
+                    basicInterfaces.string,
+                    basicInterfaces.number,
+                    basicInterfaces.boolean.nullable,
+                ]).discrepances(['Bob', '42', false]),
+                ['parameter #2: string value in number']
+            )));
+        });
         describe("input errors", function(){
             it("constructor(definition)", function(){
                 assertCatch(function() {
