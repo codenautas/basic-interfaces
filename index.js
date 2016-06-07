@@ -92,12 +92,12 @@ class PlainBasicInterface extends ParametrizedInterface {
         this.check(definition);
     }
     discrepances(obj){
-        this.check(obj);
         var self=this;
         var result = super.discrepances(obj);
         if(result){
             return result;
         }
+        this.check(obj);
         result = {};
         var keys=Object.keys(obj);
         keys.forEach(function(key){
@@ -133,7 +133,10 @@ BasicInterfaces.prototype.plain = function plain(definition){
 class ArrayBasicInterface extends ParametrizedInterface {
     constructor(definition){
         super(definition);
-        if(constructorName(definition) !== 'Array') {
+        this.check(definition);
+    }
+    check(input) {
+        if(constructorName(input) !== 'Array') {
             throw new TypeError('definition should be an Array');
         }
     }

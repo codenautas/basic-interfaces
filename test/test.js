@@ -124,7 +124,7 @@ describe("basic-interfaces", function(){
                         age:basicInterfaces.number,
                         isChief:basicInterfaces.boolean.nullable,
                     }).control(/*undefined*/);
-                }, /definition should be an Object/); 
+                }, /BasicInterfaces discrepances detected/); 
             });
             it("constructor(definition)", function(){
                 assertCatch(function() {
