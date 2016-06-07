@@ -9,11 +9,7 @@ var constructorName = require('best-globals').constructorName;
 
 class BasicInterface {
     constructor() {
-        /*
-        if(new.target === BasicInterface) {
-            throw new TypeError("Cannot construct BasicInterface instances directly");
-        }
-        */
+        if(this.constructor === BasicInterface) { throw new TypeError("Cannot construct BasicInterface instances directly");  }
     }
     control(value){ 
         var discrepances=this.discrepances(value);
@@ -45,11 +41,6 @@ class BasicInterface {
 
 class TypedBasicInterface extends BasicInterface {
     constructor(typeName) {
-        /*
-        if(new.target === BasicInterface) {
-            throw new TypeError("Cannot construct TypedBasicInterface instances directly");
-        }
-        */
         super();
         this.typeName = typeName;
     }
@@ -76,6 +67,9 @@ BasicInterfaces = function(){};
 class ParametrizedInterface extends BasicInterface {
     constructor(definition){
         super();
+        if(this.constructor === ParametrizedInterface) {
+            throw new TypeError("Cannot construct ParametrizedInterface instances directly");
+        }
         if(definition==null) {
             throw new Error('invalid definition');
         }

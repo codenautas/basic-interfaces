@@ -118,7 +118,7 @@ describe("basic-interfaces", function(){
                         name:basicInterfaces.string,
                         age:basicInterfaces.number,
                         isChief:basicInterfaces.boolean.nullable,
-                    }).control(/* undefined*/);
+                    }).control(/*undefined*/);
                 }, /BasicInterfaces discrepances detected/); 
             });
         });
