@@ -65,12 +65,15 @@ BasicInterfaces = function BasicInterface(opts){
     }
 };
 
+BasicInterfaces.prototype.init = function init(obj){
+    obj.debug(this.opts.debug);
+    return obj;
+};
+
 'boolean,string,number,object'.split(',').forEach(function(typeName){
     Object.defineProperty(BasicInterfaces.prototype, typeName,{
         get: function () {
-            var tbi = new TypedBasicInterface(typeName);
-            tbi.debug(this.opts.debug);
-            return tbi;
+            return this.init(new TypedBasicInterface(typeName));
         }
     });
 });
@@ -125,9 +128,7 @@ class PlainBasicInterface extends ParametrizedInterface {
 }
 
 BasicInterfaces.prototype.plain = function plain(definition){
-    var pbi = new PlainBasicInterface(definition);
-    pbi.debug(this.opts.debug);
-    return pbi;
+    return this.init(new PlainBasicInterface(definition));
 };
 
 module.exports = BasicInterfaces;
