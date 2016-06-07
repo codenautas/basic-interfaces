@@ -50,52 +50,37 @@ describe("basic-interfaces", function(){
         });
     });
     describe('plain', function(){
+        var plainDef = {
+            name:basicInterfaces.string,
+            age:basicInterfaces.number,
+            isChief:basicInterfaces.boolean.nullable,
+        };
         it("accept ok", function(){
             eval(assert(
-                basicInterfaces.plain({
-                    name:basicInterfaces.string,
-                    age:basicInterfaces.number,
-                    isChief:basicInterfaces.boolean.nullable,
-                }).discrepances({name:'Bob', age:42}) === null 
+                basicInterfaces.plain(plainDef).discrepances({name:'Bob', age:42}) === null 
             ));
         });
         it("detect bad attr type", function(){
             eval(assert(!differences(
-                basicInterfaces.plain({
-                    name:basicInterfaces.string,
-                    age:basicInterfaces.number,
-                    isChief:basicInterfaces.boolean.nullable,
-                }).discrepances({name:'Bob', age:'42', isChief:false}),
+                basicInterfaces.plain(plainDef).discrepances({name:'Bob', age:'42', isChief:false}),
                 {age:"string value in number"}
             )));
         });
         it("detect lack mandatory attr type", function(){
             eval(assert(!differences(
-                basicInterfaces.plain({
-                    name:basicInterfaces.string,
-                    age:basicInterfaces.number,
-                    isChief:basicInterfaces.boolean.nullable,
-                }).discrepances({name:'Bob'}),
+                basicInterfaces.plain(plainDef).discrepances({name:'Bob'}),
                 {age:'lack mandatory property'}
             )));
         });
         it("detect extra attr", function(){
             eval(assert(!differences(
-                basicInterfaces.plain({
-                    name:basicInterfaces.string,
-                    age:basicInterfaces.number,
-                    isChief:basicInterfaces.boolean.nullable,
-                }).discrepances({name:'Bob', age:42, ischief:true}),
+                basicInterfaces.plain(plainDef).discrepances({name:'Bob', age:42, ischief:true}),
                 {ischief:'unexpected property'}
             )));
         });
         it("various detects", function(){
             eval(assert(!differences(
-                basicInterfaces.plain({
-                    name:basicInterfaces.string,
-                    age:basicInterfaces.number,
-                    isChief:basicInterfaces.boolean.nullable,
-                }).discrepances({names:'Tom & Bob', age:'42'}),
+                basicInterfaces.plain(plainDef).discrepances({names:'Tom & Bob', age:'42'}),
                 {
                     names:'unexpected property',
                     age:"string value in number",
@@ -119,11 +104,7 @@ describe("basic-interfaces", function(){
             });
             it("control()", function(){
                 assertCatch(function() {
-                    basicInterfaces.plain({
-                        name:basicInterfaces.string,
-                        age:basicInterfaces.number,
-                        isChief:basicInterfaces.boolean.nullable,
-                    }).control(/*undefined*/);
+                    basicInterfaces.plain(plainDef).control(/*undefined*/);
                 }, /BasicInterfaces discrepances detected/); 
             });
             it("constructor(definition)", function(){
