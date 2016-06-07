@@ -144,6 +144,19 @@ describe("basic-interfaces", function(){
             )));
         });
         describe("input errors", function(){
+            var arr = basicInterfaces.array([basicInterfaces.string]);
+            [ {},"string",3,3.4 ].forEach(function(err) {
+                it("array.discrepances("+JSON.stringify(err)+')',function(){
+                    assertCatch(function() { arr.discrepances(err); }, /definition should be an Array/);
+                });
+            });
+            [null, undefined].forEach(function(badInput) {
+                it('constructor should reject '+JSON.stringify(badInput)+' definition', function() {
+                    assertCatch(function() {
+                        basicInterfaces.array(badInput);
+                    }, /invalid definition/);
+                }); 
+            });
             it("control()", function(){
                 assertCatch(function() {
                     basicInterfaces.array(arrayDef).control(/*undefined*/);
