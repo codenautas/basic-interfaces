@@ -18,12 +18,6 @@ AGREGAR tests:
 
 describe("basic-interfaces", function(){
     var basicInterfaces = new BasicInterfaces({debug:false});
-    var discrepanceErrors = [
-        {param:[], expected:'Array'},
-        {param:new Date(), expected:'Date'},
-        {param:new RegExp("dummy"), expected:'RegExp'},
-        {param:function(){}, expected:'Function'},
-    ];
     describe('typed', function(){
         it("accepts boolean values", function(){
             eval(assert(!differences(basicInterfaces.boolean.discrepances(true),null)));
@@ -40,17 +34,6 @@ describe("basic-interfaces", function(){
             eval(assert( basicInterfaces.boolean.control(true) ));
         });
         describe('input errors', function(){
-            'boolean,string,number,object'.split(',').forEach(function(typeName) {
-                discrepanceErrors.forEach(function(err) {
-                    it(typeName+".discrepances("+err.expected+')',function(){
-                        var error = new RegExp('invalid '+err.expected+' input');
-                        assertCatch(function() {
-                            var obj = basicInterfaces[typeName];
-                            obj.discrepances(err.param);
-                        }, error);
-                    });
-                });
-            });
             [
                 {type:'boolean', bad:1},
                 {type:'string',  bad:2},
@@ -122,10 +105,9 @@ describe("basic-interfaces", function(){
         });
         describe("input errors", function(){
             var plain = basicInterfaces.plain({name:basicInterfaces.string});
-            discrepanceErrors.forEach(function(err) {
-                it("plain.discrepances("+err.expected+')',function(){
-                    var error = new RegExp('invalid '+err.expected+' input');
-                    assertCatch(function() { plain.discrepances(err.param); }, error);
+            [ [],"string",3,3.4 ].forEach(function(err) {
+                it("plain.discrepances("+JSON.stringify(err)+')',function(){
+                    assertCatch(function() { plain.discrepances(err); }, /definition should be an Object/);
                 });
             });
             [null, undefined].forEach(function(badInput) {
@@ -142,7 +124,7 @@ describe("basic-interfaces", function(){
                         age:basicInterfaces.number,
                         isChief:basicInterfaces.boolean.nullable,
                     }).control(/*undefined*/);
-                }, /BasicInterfaces discrepances detected/); 
+                }, /definition should be an Object/); 
             });
             it("constructor(definition)", function(){
                 assertCatch(function() {

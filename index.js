@@ -24,11 +24,6 @@ class BasicInterface {
         this.enableDebug = yesNo;
     }
     discrepances(value){
-        var inputName = constructorName(value);
-        switch(inputName) {
-            case 'Date': case 'Array': case 'RegExp': case 'Function':
-                throw new Error('invalid '+inputName+' input');
-        }
         if(!this.isNullable && value==null){
             return 'null value detected in '+this.description;
         }
@@ -94,11 +89,10 @@ class ParametrizedInterface extends BasicInterface {
 class PlainBasicInterface extends ParametrizedInterface {
     constructor(definition){
         super(definition);
-        if(constructorName(definition) !== 'Object') {
-            throw new TypeError('definition should be an Object');
-        }
+        this.check(definition);
     }
     discrepances(obj){
+        this.check(obj);
         var self=this;
         var result = super.discrepances(obj);
         if(result){
@@ -124,6 +118,11 @@ class PlainBasicInterface extends ParametrizedInterface {
         });
         if(Object.keys(result).length) { return result; }
         return null;
+    }
+    check(input) {
+        if(constructorName(input) !== 'Object') {
+            throw new TypeError('definition should be an Object');
+        }
     }
 }
 
