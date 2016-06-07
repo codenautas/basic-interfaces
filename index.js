@@ -91,6 +91,9 @@ class ParametrizedInterface extends BasicInterface {
 class PlainBasicInterface extends ParametrizedInterface {
     constructor(definition){
         super(definition);
+        if(constructorName(definition) !== 'Object') {
+            throw new TypeError('definition should be an Object');
+        }
     }
     discrepances(obj){
         var self=this;
@@ -126,6 +129,5 @@ BasicInterfaces.prototype.plain = function plain(definition){
     pbi.debug(this.opts.debug);
     return pbi;
 };
-
 
 module.exports = BasicInterfaces;

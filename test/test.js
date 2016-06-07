@@ -135,7 +135,7 @@ describe("basic-interfaces", function(){
                     }, /invalid definition/);
                 }); 
             });
-            it("control", function(){
+            it("control()", function(){
                 assertCatch(function() {
                     basicInterfaces.plain({
                         name:basicInterfaces.string,
@@ -143,6 +143,11 @@ describe("basic-interfaces", function(){
                         isChief:basicInterfaces.boolean.nullable,
                     }).control(/*undefined*/);
                 }, /BasicInterfaces discrepances detected/); 
+            });
+            it("constructor(definition)", function(){
+                assertCatch(function() {
+                    basicInterfaces.plain([]);
+                }, /definition should be an Object/); 
             });
         });
     });
