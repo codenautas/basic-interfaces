@@ -11,6 +11,12 @@ var assertCatch = require('self-explain').assertCatch;
 
 describe("basic-interfaces", function(){
     var basicInterfaces = new BasicInterfaces();
+    var discrepanceErrors = [
+        {param:[], expected:'Array'},
+        {param:new Date(), expected:'Date'},
+        {param:new RegExp("dummy"), expected:'RegExp'},
+        {param:function(){}, expected:'Function'},
+    ];
     describe('typed', function(){
         it("accepts boolean values", function(){
             eval(assert(!differences(basicInterfaces.boolean.discrepances(true),null)));
@@ -19,10 +25,23 @@ describe("basic-interfaces", function(){
         });
         it("detect non boolean",function(){
             eval(assert(!differences(basicInterfaces.boolean.discrepances("ufs"), 'string value in boolean')));
-        })
+        });
         it("detect non nullable",function(){
             eval(assert(!differences(basicInterfaces.boolean.discrepances(null),'null value detected in boolean')));
-        })
+        });
+        describe('input errors', function(){
+            'boolean,string,number,object'.split(',').forEach(function(typeName) {
+                discrepanceErrors.forEach(function(err) {
+                    it(typeName+".discrepances("+err.expected+')',function(){
+                        var error = new RegExp('invalid '+err.expected+' input');
+                        assertCatch(function() {
+                            var obj = basicInterfaces[typeName];
+                            obj.discrepances(err.param);
+                        }, error);
+                    });
+                });
+            })
+        });
     });
     describe('plain', function(){
         it("accept ok", function(){
@@ -78,25 +97,15 @@ describe("basic-interfaces", function(){
                 }
             )));
         });
-    });
-    describe('input errors', function(){
-        var errors = [
-            {param:[], expected:'Array'},
-            {param:new Date(), expected:'Date'},
-            {param:new RegExp("dummy"), expected:'RegExp'},
-            {param:function(){}, expected:'Function'},
-        ];
-        'boolean,string,number,object'.split(',').forEach(function(typeName) {
-            errors.forEach(function(err) {
-                it(typeName+".discrepances("+err.expected+')',function(){
+        describe("input errors", function(){
+            var plain = basicInterfaces.plain({name:basicInterfaces.string});
+            discrepanceErrors.forEach(function(err) {
+                it("plain.discrepances("+err.expected+')',function(){
                     var error = new RegExp('invalid '+err.expected+' input');
-                    assertCatch(function() {
-                        var obj = basicInterfaces[typeName];
-                        obj.discrepances(err.param);
-                    }, error);
+                    assertCatch(function() { plain.discrepances(err.param); }, error);
                 });
             });
-        })
+        });
     });
 });
 
