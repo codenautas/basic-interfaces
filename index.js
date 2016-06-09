@@ -89,7 +89,7 @@ class ParametrizedInterface extends BasicInterface {
 class PlainBasicInterface extends ParametrizedInterface {
     constructor(definition){
         super(definition);
-        this.check(definition);
+        this.checkInputClass(definition);
     }
     discrepances(obj){
         var self=this;
@@ -97,7 +97,7 @@ class PlainBasicInterface extends ParametrizedInterface {
         if(result){
             return result;
         }
-        this.check(obj);
+        this.checkInputClass(obj);
         result = {};
         var keys=Object.keys(obj);
         keys.forEach(function(key){
@@ -119,7 +119,7 @@ class PlainBasicInterface extends ParametrizedInterface {
         if(Object.keys(result).length) { return result; }
         return null;
     }
-    check(input) {
+    checkInputClass(input) {
         if(constructorName(input) !== 'Object') {
             throw new TypeError('definition should be an Object');
         }
@@ -130,39 +130,12 @@ BasicInterfaces.prototype.plain = function plain(definition){
     return this.init(new PlainBasicInterface(definition));
 };
 
-class ArrayBasicInterface extends ParametrizedInterface {
+class ArrayBasicInterface extends PlainBasicInterface {
     constructor(definition){
         super(definition);
-        this.check(definition);
+        this.checkInputClass(definition);
     }
-    discrepances(arr){
-        var self=this;
-        var result = super.discrepances(arr);
-        if(result){
-            return result;
-        }
-        this.check(arr);
-        result = [];
-        var mandatoryCount = self.definition.filter(function(elem) {
-            return ! elem.isNullable;
-        }).length;
-        if(arr.length < mandatoryCount) {
-            result.push('missing mandatory parameters: '+(mandatoryCount-arr.length));
-        }
-        if(arr.length > self.definition.length) {
-            result.push('left over parameters: '+(arr.length-self.definition.length));
-        }
-        if(result.length) { return result; }
-        for(var p=0; p<arr.length; ++p) {
-            var localResult = self.definition[p].discrepances(arr[p]);
-            if(localResult != null){
-                result.push('parameter #'+(p+1)+': '+ localResult);
-            }
-        }
-        if(result.length) { return result; }
-        return null;
-    }
-    check(input) {
+    checkInputClass(input) {
         if(constructorName(input) !== 'Array') {
             throw new TypeError('definition should be an Array');
         }

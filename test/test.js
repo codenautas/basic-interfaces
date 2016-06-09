@@ -126,28 +126,43 @@ describe("basic-interfaces", function(){
             ));
         });
         it("detect missing parameters", function(){
-            eval(assert(!differences(
-                basicInterfaces.array(arrayDef).discrepances(['Bob']),
-                ['missing mandatory parameters: 1']
-            )));
+            eval(assert(
+                !differences(
+                    basicInterfaces.array(arrayDef).discrepances(['Bob']),
+                    {1:'lack mandatory property'}
+                )
+            ));
         });
         it("detect exceeding parameters", function(){
-            eval(assert(!differences(
-                basicInterfaces.array(arrayDef).discrepances(['Bob',122,true,'John', 'Paul']),
-                ['left over parameters: 2']
-            )));
+            eval(assert(
+                !differences(
+                    basicInterfaces.array(arrayDef).discrepances(['Bob',122,true,'John', 'Paul']),
+                    {
+                        3:'unexpected property',
+                        4:'unexpected property',
+                    }
+                )
+            ));
         });
         it("detect bad parameter type", function(){
-            eval(assert(!differences(
-                basicInterfaces.array(arrayDef).discrepances(['Bob', '42', false]),
-                ['parameter #2: string value in number']
-            )));
+            eval(assert(
+                !differences(
+                    basicInterfaces.array(arrayDef).discrepances(['Bob', '42', false]),
+                    {1: 'string value in number'}
+                )
+            ));
         });
         it("various detects", function(){
-            eval(assert(!differences(
-                basicInterfaces.array(arrayDef).discrepances([1000, 'Tom & Bob', 9]),
-                ['parameter #1: number value in string', 'parameter #2: string value in number', 'parameter #3: number value in boolean']
-            )));
+            eval(assert(
+                !differences(
+                    basicInterfaces.array(arrayDef).discrepances([1000, 'Tom & Bob', 9]),
+                    {
+                        0: 'number value in string', 
+                        1: 'string value in number', 
+                        2: 'number value in boolean'
+                    }
+                )
+            ));
         });
         describe("input errors", function(){
             var arr = basicInterfaces.array([basicInterfaces.string]);
