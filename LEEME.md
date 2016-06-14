@@ -1,6 +1,12 @@
 <!--multilang v0 es:LEEME.md en:README.md -->
 # basic-interfaces
+<!--lang:es-->
+Valida el uso de los parámetros básicos de una interfaz
+
+<!--lang:en--]
 Validates use of basic inteface parameters
+
+[!--lang:*-->
 
 <!--lang:es-->
 # Instalación
