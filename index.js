@@ -48,7 +48,7 @@ class TypedBasicInterface extends BasicInterface {
     }
     discrepances(value) {
         return super.discrepances(value) || (
-            value != null && typeof value !== this.typeName ? typeof value +" value in "+this.typeName : null
+            value != null && typeof value !== this.typeName ? typeof value +" value in "+this.description : null
         );
     }
     get description(){
@@ -82,8 +82,11 @@ class DateInterface extends TypedBasicInterface {
     }
     discrepances(value) {
         return super.discrepances(value) || (
-            bestGlobals.date.isOK(value) ? null : typeof value+ " value in Date"
+            bestGlobals.date.isOK(value) ? null : typeof value+ " value in " +this.description
         );
+    }
+    get description(){
+        return 'date';
     }
 }
 

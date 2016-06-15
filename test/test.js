@@ -125,6 +125,7 @@ describe("basic-interfaces", function(){
         var arrayDef = [
             basicInterfaces.string,
             basicInterfaces.number,
+            basicInterfaces.date.nullable,
             basicInterfaces.boolean.nullable,
         ];
         it("accept ok", function(){
@@ -143,10 +144,10 @@ describe("basic-interfaces", function(){
         it("detect exceeding parameters", function(){
             eval(assert(
                 !differences(
-                    basicInterfaces.array(arrayDef).discrepances(['Bob',122,true,'John', 'Paul']),
+                    basicInterfaces.array(arrayDef).discrepances(['Bob',122,new Date(),true,'John', 'Paul']),
                     {
-                        3:'unexpected property',
                         4:'unexpected property',
+                        5:'unexpected property',
                     }
                 )
             ));
@@ -155,7 +156,8 @@ describe("basic-interfaces", function(){
             eval(assert(
                 !differences(
                     basicInterfaces.array(arrayDef).discrepances(['Bob', '42', false]),
-                    {1: 'string value in number'}
+                    {1: 'string value in number',
+                     2: 'boolean value in date'}
                 )
             ));
         });
@@ -166,7 +168,7 @@ describe("basic-interfaces", function(){
                     {
                         0: 'number value in string', 
                         1: 'string value in number', 
-                        2: 'number value in boolean'
+                        2: 'number value in date'
                     }
                 )
             ));
