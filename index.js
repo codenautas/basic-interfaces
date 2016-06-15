@@ -48,7 +48,7 @@ class TypedBasicInterface extends BasicInterface {
     }
     discrepances(value) {
         return super.discrepances(value) || (
-            value != null && typeof value !== this.typeName ? typeof value +" value in "+this.description : null
+            value != null && typeof value !== this.typeName ? typeof value +" value in "+this.typeName : null
         );
     }
     get description(){
@@ -76,13 +76,13 @@ BasicInterfaces.prototype.init = function init(obj){
     });
 });
 
-class DateInterface extends TypedBasicInterface {
+class DateInterface extends BasicInterface {
     constructor() {
-        super('object');
+        super();
     }
     discrepances(value) {
         return super.discrepances(value) || (
-            bestGlobals.date.isOK(value) ? null : typeof value+ " value in " +this.description
+            (value != null && ! bestGlobals.date.isOK(value)) ? typeof value+ " value in " +this.description : null
         );
     }
     get description(){
