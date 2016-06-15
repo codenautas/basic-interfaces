@@ -5,17 +5,20 @@
 
 var BasicInterfaces = {};
 
-var constructorName = require('best-globals').constructorName;
+var bestGlobals = require('best-globals');
+var constructorName = bestGlobals.constructorName;
 
 class BasicInterface {
     constructor() {
         if(this.constructor === BasicInterface) { throw new TypeError("Cannot construct BasicInterface instances directly");  }
         this.enableDebug = true;
     }
-    control(value){ 
+    control(value){
         var discrepances=this.discrepances(value);
         if(discrepances!==null){
-            if(this.enableDebug) { console.log(discrepances); }
+            if(this.enableDebug) {
+                console.log(discrepances);
+            }
             throw new Error('BasicInterfaces discrepances detected '+JSON.stringify(discrepances));
         }
         return true;
@@ -71,6 +74,23 @@ BasicInterfaces.prototype.init = function init(obj){
             return this.init(new TypedBasicInterface(typeName));
         }
     });
+});
+
+class DateInterface extends TypedBasicInterface {
+    constructor() {
+        super('object');
+    }
+    discrepances(value) {
+        return super.discrepances(value) || (
+            bestGlobals.date.isOK(value) ? null : typeof value+ " value in Date"
+        );
+    }
+}
+
+Object.defineProperty(BasicInterfaces.prototype, 'date',{
+    get: function () {
+        return this.init(new DateInterface());
+    }
 });
 
 class ParametrizedInterface extends BasicInterface {

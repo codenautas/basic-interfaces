@@ -32,6 +32,11 @@ describe("basic-interfaces", function(){
         });
         it("control ok",function(){
             eval(assert( basicInterfaces.boolean.control(true) ));
+            eval(assert( basicInterfaces.string.control("str") ));
+            eval(assert( basicInterfaces.number.control(12) ));
+            eval(assert( basicInterfaces.number.control(0.12) ));
+            eval(assert( basicInterfaces.object.control({one:1, two:2}) ));
+            eval(assert( basicInterfaces.date.control(new Date()) ));
         });
         describe('input errors', function(){
             [
@@ -39,6 +44,8 @@ describe("basic-interfaces", function(){
                 {type:'string',  bad:2},
                 {type:'number',  bad:'str'},
                 {type:'object',  bad:3},
+                {type:'date',  bad:'nop'},
+                {type:'date',  bad:new Date('nop')},
             ].forEach(function(ctrl) {
                 it(ctrl.type+'.control('+ctrl.bad+')', function() {
                    assertCatch(function() {
