@@ -1,7 +1,7 @@
 {
   "name": "basic-interfaces",
   "description": "Validates use of basic inteface parameters",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "repository": "codenautas/basic-interfaces",
   "license": "MIT",
@@ -16,15 +16,15 @@
     "fs-extra": "~0.30.0",
     "fs-promise": "~0.5.0",
     
-    "best-globals": "~0.4.4",
+    "best-globals": "~0.5.0",
     "best-promise": "~0.2.4"
   },
   "devDependencies": {
-    "istanbul": "~0.4.3",
-    "mocha": "~2.5.3",
-    "sinon": "~1.17.3",
+    "istanbul": "~0.4.5",
+    "mocha": "~3.0.2",
+    "sinon": "~1.17.5",
     
-    "self-explain": "~0.10.6"
+    "self-explain": "~0.10.8"
   },
   "engines": {
     "node": ">= 0.12"
